@@ -10,7 +10,7 @@ const passport = require("passport");
 const validateEventInput = require("../../validation/event");
 
 // Load User model
-const User = require("../../models/User");
+const Event = require("../../models/Event");
 
 router.post(
   "/",
@@ -23,28 +23,44 @@ router.post(
       // If any errors, send 400 with errors object
       return res.status(400).json(errors);
     }
-    console.log(req.user.id);
 
-    User.findOne({ _id: req.user.id })
-      .then(event => {
-        console.log(event);
-        const newEvent = {
+    const newEvent = new Event({
+      user: req.user.id,
+      events: [
+        {
           title: req.body.title,
           start: req.body.start,
           end: req.body.end,
           allday: req.body.allday,
           color: req.body.color,
-          textcolor: req.body.textcolor,
-          user: req.user.id
-        };
+          textcolor: req.body.textcolor
+        }
+      ]
+    });
+    newEvent.save().then(event => res.json(event));
+  }
+);
+// @route   GET api/events/userevents
+// @desc    Get current users events
+// @access  Private
+router.get(
+  "/userevents",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    const errors = {};
 
-        // Add to comments array
-        event.events.unshift(newEvent);
-
-        // Save
-        event.save().then(event => res.json(event));
+    Event.find({ user: req.user.id })
+      .populate("events")
+      .then(events => {
+        if (!events) {
+          errors.noevents = "There is no events for this user";
+          return res.status(404).json(errors);
+        }
+        res.json(events);
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        res.status(404).json(err);
+      });
   }
 );
 

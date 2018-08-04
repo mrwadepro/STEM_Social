@@ -22,17 +22,7 @@ const UserSchema = new Schema({
   date: {
     type: Date,
     default: Date.now
-  },
-  events: [
-    {
-      title: { type: String, required: true },
-      start: { type: String, required: true },
-      end: { type: String, required: true },
-      allday: { type: Boolean },
-      color: { type: String, required: true },
-      textcolor: { type: String }
-    }
-  ]
+  }
 });
 
 module.exports = User = mongoose.model("users", UserSchema);
