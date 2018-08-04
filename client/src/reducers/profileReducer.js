@@ -3,12 +3,12 @@ import {
   GET_PROFILES,
   PROFILE_LOADING,
   CLEAR_CURRENT_PROFILE
-} from '../actions/types';
+} from "../actions/types";
 
 const initialState = {
   profile: null,
   profiles: null,
-  loading: false
+  loadingProfile: false
 };
 
 export default function(state = initialState, action) {
