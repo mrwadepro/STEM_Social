@@ -6,7 +6,7 @@ import { GET_ERRORS, CLEAR_ERRORS, GET_EVENTS, EVENT_LOADING } from "./types";
 export const getEvents = () => dispatch => {
   dispatch(setEventsLoading());
   axios
-    .get("/api/user")
+    .get("/api/events/userevents")
     .then(res =>
       dispatch({
         type: GET_EVENTS,

@@ -7,10 +7,6 @@ const EventSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "users"
   },
-  date: {
-    type: Date,
-    default: Date.now
-  },
   events: [
     {
       title: { type: String, required: true },
