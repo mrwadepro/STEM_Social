@@ -86,7 +86,6 @@ class Dashboard extends Component {
         }
       }
     }
-    console.log(events);
     let dashboardContent;
 
     if (profile === null || loadingProfile || loadingEvents) {
@@ -132,6 +131,7 @@ class Dashboard extends Component {
             <div className="col-md-12">
               <h1 className="display-4">Dashboard</h1>
               {dashboardContent}
+              <br />
               <div id="example-component">
                 <FullCalendar
                   id="your-custom-ID"
@@ -146,7 +146,7 @@ class Dashboard extends Component {
                   eventLimit={true} // allow "more" link when too many events
                   events={events}
                 />
-              </div>DataView
+              </div>
             </div>
           </div>
         </div>
