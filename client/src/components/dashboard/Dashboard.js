@@ -16,7 +16,7 @@ import ReactDOM from "react-dom";
 
 // ... and fullcalendar-reactwrapper.
 import FullCalendar from "fullcalendar-reactwrapper";
-var moment = require("moment-timezone");
+
 class Dashboard extends Component {
   constructor(props) {
     super(props);
