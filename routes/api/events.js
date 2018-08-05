@@ -11,7 +11,7 @@ const validateEventInput = require("../../validation/event");
 
 // Load User model
 const Event = require("../../models/Event");
-var moment = require("moment");
+
 router.post(
   "/",
   passport.authenticate("jwt", { session: false }),
@@ -29,8 +29,8 @@ router.post(
       events: [
         {
           title: req.body.title,
-          start: moment.utc(req.body.start),
-          end: moment.utc(req.body.end),
+          start: req.body.start,
+          end: req.body.end,
           allday: req.body.allday,
           color: req.body.color,
           textcolor: req.body.textcolor
