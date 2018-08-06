@@ -6,8 +6,10 @@ import TextFieldGroup from "../common/TextFieldGroup";
 import TextAreaFieldGroup from "../common/TextAreaFieldGroup";
 import InputGroup from "../common/InputGroup";
 import SelectListGroup from "../common/SelectListGroup";
-import { createProfile } from "../../actions/profileActions";
+import { createProfile, addPicture } from "../../actions/profileActions";
+import { loginUser } from "../../actions/authActions";
 
+var image = "";
 class CreateProfile extends Component {
   constructor(props) {
     super(props);
@@ -17,7 +19,6 @@ class CreateProfile extends Component {
       company: "",
       website: "",
       location: "",
-      status: "",
       skills: "",
       githubusername: "",
       bio: "",
@@ -26,6 +27,7 @@ class CreateProfile extends Component {
       linkedin: "",
       youtube: "",
       instagram: "",
+      profilepicture: "",
       errors: {}
     };
 
@@ -38,7 +40,23 @@ class CreateProfile extends Component {
       this.setState({ errors: nextProps.errors });
     }
   }
-
+  componentWillMount() {}
+  componentDidMount() {
+    document.getElementById("upload_widget_opener").addEventListener(
+      "click",
+      function() {
+        window.cloudinary.openUploadWidget(
+          { cloud_name: "stemuli", upload_preset: "hpl71cup" },
+          function(error, result) {
+            console.log(error, result);
+            image = result[0].url;
+            console.log(image);
+          }
+        );
+      },
+      false
+    );
+  }
   onSubmit(e) {
     e.preventDefault();
 
@@ -47,7 +65,6 @@ class CreateProfile extends Component {
       company: this.state.company,
       website: this.state.website,
       location: this.state.location,
-      status: this.state.status,
       skills: this.state.skills,
       githubusername: this.state.githubusername,
       bio: this.state.bio,
@@ -55,10 +72,15 @@ class CreateProfile extends Component {
       facebook: this.state.facebook,
       linkedin: this.state.linkedin,
       youtube: this.state.youtube,
+
       instagram: this.state.instagram
+    };
+    const imageData = {
+      profilepicture: image
     };
 
     this.props.createProfile(profileData, this.props.history);
+    this.props.addPicture(imageData);
   }
 
   onChange(e) {
@@ -121,19 +143,6 @@ class CreateProfile extends Component {
       );
     }
 
-    // Select options for status
-    const options = [
-      { label: "* Select Professional Status", value: 0 },
-      { label: "Developer", value: "Developer" },
-      { label: "Junior Developer", value: "Junior Developer" },
-      { label: "Senior Developer", value: "Senior Developer" },
-      { label: "Manager", value: "Manager" },
-      { label: "Student or Learning", value: "Student or Learning" },
-      { label: "Instructor or Teacher", value: "Instructor or Teacher" },
-      { label: "Intern", value: "Intern" },
-      { label: "Other", value: "Other" }
-    ];
-
     return (
       <div className="create-profile">
         <div className="container">
@@ -153,6 +162,18 @@ class CreateProfile extends Component {
                   error={errors.handle}
                   info="A unique handle for your profile URL. Your full name, company name, nickname"
                 />
+                <a
+                  href="#"
+                  value={image}
+                  name="profilepicture"
+                  onChange={this.onChange}
+                  className="btn btn-primary justify-content-center"
+                  id="upload_widget_opener"
+                >
+                  Upload Profile Image
+                </a>
+                <br />
+                <br />
                 <TextFieldGroup
                   placeholder="Company"
                   name="company"
@@ -202,7 +223,6 @@ class CreateProfile extends Component {
                   error={errors.bio}
                   info="Tell us a little about yourself"
                 />
-
                 <div className="mb-3">
                   <button
                     type="button"
@@ -244,5 +264,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { createProfile }
+  { createProfile, addPicture }
 )(withRouter(CreateProfile));

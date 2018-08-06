@@ -1,18 +1,21 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { registerUser } from '../../actions/authActions';
-import TextFieldGroup from '../common/TextFieldGroup';
-
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { registerUser } from "../../actions/authActions";
+import TextFieldGroup from "../common/TextFieldGroup";
+import SelectListGroup from "../common/SelectListGroup";
 class Register extends Component {
   constructor() {
     super();
     this.state = {
-      name: '',
-      email: '',
-      password: '',
-      password2: '',
+      name: "",
+      email: "",
+      password: "",
+      password2: "",
+      account_type: "",
+      corporation: "",
+
       errors: {}
     };
 
@@ -22,7 +25,7 @@ class Register extends Component {
 
   componentDidMount() {
     if (this.props.auth.isAuthenticated) {
-      this.props.history.push('/dashboard');
+      this.props.history.push("/dashboard");
     }
   }
 
@@ -43,7 +46,9 @@ class Register extends Component {
       name: this.state.name,
       email: this.state.email,
       password: this.state.password,
-      password2: this.state.password2
+      password2: this.state.password2,
+      account_type: this.state.account_type,
+      corporation: this.state.corporation
     };
 
     this.props.registerUser(newUser, this.props.history);
@@ -51,7 +56,13 @@ class Register extends Component {
 
   render() {
     const { errors } = this.state;
-
+    // Select options for status
+    const options = [
+      { label: "* Select Account Type", value: 0 },
+      { label: "Corporation", value: "Corporation" },
+      { label: "Student", value: "Student" },
+      { label: "Teacher", value: "Teacher" }
+    ];
     return (
       <div className="register">
         <div className="container">
@@ -94,6 +105,25 @@ class Register extends Component {
                   onChange={this.onChange}
                   error={errors.password2}
                 />
+                <SelectListGroup
+                  placeholder="Account Type"
+                  name="account_type"
+                  value={this.state.account_type}
+                  onChange={this.onChange}
+                  options={options}
+                  error={errors.account_type}
+                  info="What kind of user are you?"
+                />
+                {this.state.account_type === "Corporation" && (
+                  <TextFieldGroup
+                    placeholder="Corporation"
+                    name="corporation"
+                    value={this.state.corporation}
+                    onChange={this.onChange}
+                    error={errors.corporation}
+                  />
+                )}
+
                 <input type="submit" className="btn btn-info btn-block mt-4" />
               </form>
             </div>
@@ -115,4 +145,7 @@ const mapStateToProps = state => ({
   errors: state.errors
 });
 
-export default connect(mapStateToProps, { registerUser })(withRouter(Register));
+export default connect(
+  mapStateToProps,
+  { registerUser }
+)(withRouter(Register));

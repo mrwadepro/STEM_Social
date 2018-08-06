@@ -14,7 +14,6 @@ class Navbar extends Component {
 
   render() {
     const { isAuthenticated, user } = this.props.auth;
-
     const authLinks = (
       <ul className="navbar-nav ml-auto">
         <li className="nav-item">
@@ -94,12 +93,14 @@ class Navbar extends Component {
 }
 
 Navbar.propTypes = {
+  profile: PropTypes.object.isRequired,
   logoutUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-  auth: state.auth
+  auth: state.auth,
+  profile: state.profile
 });
 
 export default connect(

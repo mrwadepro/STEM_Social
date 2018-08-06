@@ -59,6 +59,14 @@ export const createProfile = (profileData, history) => dispatch => {
       })
     );
 };
+export const addPicture = picture => dispatch => {
+  axios
+    .post("/api/users/changepicture", picture)
+    .then(res => res.json(res))
+    .catch(err => {
+      console.log(err);
+    });
+};
 //
 // Add experience
 export const addExperience = (expData, history) => dispatch => {

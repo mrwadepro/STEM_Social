@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getEvents } from "../../actions/eventActions";
 import { getCurrentProfile, deleteAccount } from "../../actions/profileActions";
+import { refreshUser } from "../../actions/authActions";
 
 import Spinner from "../common/Spinner";
 import ProfileActions from "./ProfileActions";
@@ -65,6 +66,7 @@ class Dashboard extends Component {
   }
   componentDidMount() {
     this.props.getCurrentProfile();
+    this.props.refreshUser();
     this.props.getEvents();
   }
 
@@ -132,6 +134,8 @@ class Dashboard extends Component {
               <h1 className="display-4">Dashboard</h1>
               {dashboardContent}
               <br />
+
+              <br />
               <div id="example-component">
                 <FullCalendar
                   id="your-custom-ID"
@@ -171,5 +175,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getCurrentProfile, deleteAccount, getEvents }
+  { getCurrentProfile, deleteAccount, getEvents, refreshUser }
 )(Dashboard);

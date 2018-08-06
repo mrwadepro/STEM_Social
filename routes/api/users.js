@@ -45,7 +45,9 @@ router.post("/register", (req, res) => {
         name: req.body.name,
         email: req.body.email,
         avatar,
-        password: req.body.password
+        password: req.body.password,
+        account_type: req.body.account_type,
+        corporation: req.body.corporation
       });
 
       bcrypt.genSalt(10, (err, salt) => {
@@ -55,7 +57,7 @@ router.post("/register", (req, res) => {
           newUser
             .save()
             .then(user => res.json(user))
-            .catch(err => console.log(err));
+            .catch(err => console.log());
         });
       });
     }
@@ -120,8 +122,25 @@ router.get(
     res.json({
       id: req.user.id,
       name: req.user.name,
-      email: req.user.email
+      avatar: req.user.avatar
     });
+  }
+);
+
+// @route   POST api/users/changepicture
+// @desc    Change profile picture
+// @access  Private
+router.post(
+  "/changepicture",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    User.findOneAndUpdate(
+      { _id: req.user.id },
+      { $set: { avatar: req.body.profilepicture } },
+      { new: true }
+    )
+      .then(user => res.json(user))
+      .catch(err => res.json(err));
   }
 );
 

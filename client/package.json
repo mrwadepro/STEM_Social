@@ -5,6 +5,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "classnames": "^2.2.5",
+    "cloudinary-react": "^1.0.6",
     "fullcalendar": "^3.0.0",
     "fullcalendar-reactwrapper": "^1.0.7",
     "fullcalendar-reactwrapper-scheduler": "^1.0.7",

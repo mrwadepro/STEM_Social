@@ -13,3 +13,4 @@ export const ADD_POST = "ADD_POST";
 export const DELETE_POST = "DELETE_POST";
 export const GET_EVENTS = "GET_EVENTS";
 export const EVENT_LOADING = "EVENT_LOADING";
+export const REFRESH_USER = "REFRESH_USER";
