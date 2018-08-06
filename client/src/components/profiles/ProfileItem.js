@@ -6,6 +6,7 @@ import isEmpty from "../../validation/is-empty";
 class ProfileItem extends Component {
   render() {
     const { profile } = this.props;
+    console.log(profile);
 
     return (
       <div className="card card-body bg-light mb-3">
