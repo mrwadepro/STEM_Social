@@ -40,7 +40,6 @@ class CreateProfile extends Component {
       this.setState({ errors: nextProps.errors });
     }
   }
-  componentWillMount() {}
   componentDidMount() {
     document.getElementById("upload_widget_opener").addEventListener(
       "click",
