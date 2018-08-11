@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { GET_ERRORS, CLEAR_ERRORS, GET_EVENTS, EVENT_LOADING } from "./types";
+import { CLEAR_ERRORS, GET_EVENTS, EVENT_LOADING } from "./types";
 
 // Get Events
 export const getEvents = () => dispatch => {

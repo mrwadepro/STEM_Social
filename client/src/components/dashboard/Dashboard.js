@@ -12,9 +12,6 @@ import Experience from "./Experience";
 import Education from "./Education";
 import "../../../node_modules/fullcalendar-reactwrapper/dist/css/fullcalendar.min.css";
 
-// import React...
-import ReactDOM from "react-dom";
-
 // ... and fullcalendar-reactwrapper.
 import FullCalendar from "fullcalendar-reactwrapper";
 

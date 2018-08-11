@@ -5,9 +5,7 @@ import PropTypes from "prop-types";
 import TextFieldGroup from "../common/TextFieldGroup";
 import TextAreaFieldGroup from "../common/TextAreaFieldGroup";
 import InputGroup from "../common/InputGroup";
-import SelectListGroup from "../common/SelectListGroup";
 import { createProfile, addPicture } from "../../actions/profileActions";
-import { loginUser } from "../../actions/authActions";
 
 var image = "";
 class CreateProfile extends Component {
@@ -49,7 +47,6 @@ class CreateProfile extends Component {
           function(error, result) {
             console.log(error, result);
             image = result[0].url;
-            console.log(image);
           }
         );
       },
@@ -162,7 +159,6 @@ class CreateProfile extends Component {
                   info="A unique handle for your profile URL. Your full name, company name, nickname"
                 />
                 <a
-                  href="#"
                   value={image}
                   name="profilepicture"
                   onChange={this.onChange}

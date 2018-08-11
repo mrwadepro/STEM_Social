@@ -1,0 +1,7 @@
+.chat {
+  color: white;
+}
+
+.chat .dropdown-toggle:after {
+  content: none;
+}

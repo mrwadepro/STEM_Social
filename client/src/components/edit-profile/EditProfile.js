@@ -47,7 +47,6 @@ class CreateProfile extends Component {
           function(error, result) {
             console.log(error, result);
             image = result[0].url;
-            console.log(image);
           }
         );
       },
@@ -214,7 +213,6 @@ class CreateProfile extends Component {
                   info="A unique handle for your profile URL. Your full name, company name, nickname"
                 />
                 <a
-                  href="#"
                   value={image}
                   name="profilepicture"
                   onChange={this.onChange}
