@@ -6,15 +6,17 @@ import { getCurrentProfile } from "../../../actions/profileActions";
 import { refreshUser } from "../../../actions/authActions";
 import "../../../Chat.css";
 import $ from "jquery";
+const uuidv4 = require("uuid/v4");
 
 var socket = io();
 socket.heartbeatTimeout = 20000;
-
+var userList = [];
 class ChatLayout extends Component {
   constructor() {
     super();
     this.state = {
       message: "",
+      user: [],
       users: []
     };
     this.onSubmit = this.onSubmit.bind(this);
@@ -24,7 +26,8 @@ class ChatLayout extends Component {
       this.setState({ message: "" });
     });
     socket.on("ADD_USER_TO_LIST", userList => {
-      this.setState({ users: userList });
+      console.log(userList);
+      this.setState({ user: userList });
     });
   }
 
@@ -32,7 +35,8 @@ class ChatLayout extends Component {
     this.props.getCurrentProfile();
     this.props.refreshUser();
     const { user } = this.props.auth;
-    socket.emit("ADDUSER", user.name);
+    // socket.emit("ADDUSER", user.name);
+    this.createUser(user.name);
   }
 
   onSubmit(e) {
@@ -40,6 +44,14 @@ class ChatLayout extends Component {
     socket.emit("chat message", this.state.message);
   }
 
+  createUser(name) {
+    console.log("Creating..");
+
+    const userObj = {};
+    userObj["user"] = name;
+    userObj["id"] = uuidv4();
+    socket.emit("ADDUSER", userObj);
+  }
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
@@ -80,7 +92,7 @@ class ChatLayout extends Component {
           >
             Chat
           </button>
-          {this.UserDisplay(this.state.users)}
+          {this.UserDisplay(this.state.user)}
         </div>
         <ul id="messages">
           <div />

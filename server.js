@@ -61,7 +61,6 @@ io.on("connection", function(socket) {
   socket.on("ADDUSER", function(user) {
     userList.push(user);
     console.log(userList);
-    io.emit("ADD_USER_TO_LIST", userList);
   });
   socket.on("chat message", function(msg) {
     io.emit("chat message", msg);
