@@ -25,9 +25,10 @@ class ChatLayout extends Component {
       $("#messages").append($("<li>").text(msg));
       this.setState({ message: "" });
     });
-    socket.on("ADD_USER_TO_LIST", userList => {
-      console.log(userList);
-      this.setState({ user: userList });
+
+    socket.on("update user list", userList => {
+      this.setState({ users: userList });
+      this.forceUpdate();
     });
   }
 
@@ -36,7 +37,7 @@ class ChatLayout extends Component {
     this.props.refreshUser();
     const { user } = this.props.auth;
     // socket.emit("ADDUSER", user.name);
-    this.createUser(user.name);
+    this.createUser(user.name, user.id);
   }
 
   onSubmit(e) {
@@ -44,12 +45,10 @@ class ChatLayout extends Component {
     socket.emit("chat message", this.state.message);
   }
 
-  createUser(name) {
-    console.log("Creating..");
-
+  createUser(name, id) {
     const userObj = {};
     userObj["user"] = name;
-    userObj["id"] = uuidv4();
+    userObj["userid"] = id;
     socket.emit("ADDUSER", userObj);
   }
   onChange(e) {
@@ -62,13 +61,16 @@ class ChatLayout extends Component {
     }
   };
   UserDisplay(users) {
-    const Users = users.map((user, i) => {
-      return (
-        <a className="dropdown-item" key={i} href="">
-          {user}
-        </a>
-      );
-    });
+    let Users;
+    if (users.length !== 0) {
+      Users = users.map((user, i) => {
+        return (
+          <a className="dropdown-item" key={i} href="">
+            {user.user}
+          </a>
+        );
+      });
+    }
     return (
       <div className="dropdown-menu" id="users">
         <a className="dropdown-item" href="">
@@ -92,7 +94,7 @@ class ChatLayout extends Component {
           >
             Chat
           </button>
-          {this.UserDisplay(this.state.user)}
+          {this.UserDisplay(this.state.users)}
         </div>
         <ul id="messages">
           <div />

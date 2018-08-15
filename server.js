@@ -13,6 +13,7 @@ const app = express();
 
 //Chat client part
 let userList = [];
+let socketList = [];
 const port = process.env.PORT || 5000;
 var server = app.listen(port, () =>
   console.log(`Server running on port ${port}`)
@@ -59,10 +60,29 @@ if (process.env.NODE_ENV === "production") {
 //Chat socket actions
 io.on("connection", function(socket) {
   socket.on("ADDUSER", function(user) {
-    userList.push(user);
-    console.log(userList);
+    let duplicate = false;
+    if (userList != 0) {
+      for (var i = 0; i < userList.length; i++) {
+        if (userList[i].userid == user.userid) {
+          duplicate = true;
+        }
+      }
+    }
+    if (duplicate == false) {
+      user["socket"] = socket.id;
+      userList.push(user);
+    }
+    socket.emit("update user list", userList);
+    socket.broadcast.emit("update user list", userList);
   });
   socket.on("chat message", function(msg) {
     io.emit("chat message", msg);
+  });
+  socket.on("disconnect", () => {
+    const newUsers = userList.filter(users => users.socket != socket.id);
+    console.log(newUsers);
+
+    socket.emit("update user list", newUsers);
+    socket.broadcast.emit("update user list", newUsers);
   });
 });
