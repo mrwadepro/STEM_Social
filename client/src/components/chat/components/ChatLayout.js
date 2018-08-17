@@ -10,7 +10,7 @@ import UserChat from "./UserChat";
 
 var socket = io();
 socket.heartbeatTimeout = 20000;
-
+let userList = [];
 class ChatLayout extends Component {
   constructor() {
     super();
@@ -69,7 +69,6 @@ class ChatLayout extends Component {
   }
 
   createChatWindow(user) {
-    let userList = [];
     userList.push(user);
     this.setState({ userList: userList });
   }

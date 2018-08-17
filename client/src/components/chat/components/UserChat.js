@@ -8,47 +8,28 @@ class UserChat extends React.Component {
   }
 
   render() {
-    const UserItem = ({ users }) => {
-      users.map((user, i) => {
-        console.log(user.user);
-        return (
-          <li key={i}>
-            <div className="btn-group dropup">
-              <button
-                type="button"
-                className="btn btn-secondary dropdown-toggle"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                {user.user}
-              </button>
-
-              <div className="dropdown-menu" />
-            </div>
-          </li>
-        );
-      });
-    };
     return (
       <ul>
-        {this.props.list[0] !== undefined && (
-          <li>
-            <div className="btn-group dropup">
-              <button
-                type="button"
-                className="btn btn-secondary dropdown-toggle"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                {this.props.list[0].user}
-              </button>
-
-              <div className="dropdown-menu" />
-            </div>
-          </li>
-        )}
+        {console.log(this.props.list)}
+        {this.props.list[0] !== undefined &&
+          this.props.list.map((user, i) => {
+            return (
+              <li key={i}>
+                <div className="btn-group dropup">
+                  <button
+                    type="button"
+                    className="btn btn-secondary dropdown-toggle"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    {this.props.list[i].user}
+                  </button>
+                  <div className="dropdown-menu" />
+                </div>
+              </li>
+            );
+          })}
       </ul>
     );
   }

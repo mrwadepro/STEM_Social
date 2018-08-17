@@ -5,3 +5,7 @@
 .chat .dropdown-toggle:after {
   content: none;
 }
+
+li {
+  display: inline;
+}
