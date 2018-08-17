@@ -6,18 +6,19 @@ import { getCurrentProfile } from "../../../actions/profileActions";
 import { refreshUser } from "../../../actions/authActions";
 import "../../../Chat.css";
 import $ from "jquery";
-const uuidv4 = require("uuid/v4");
+import UserChat from "./UserChat";
 
 var socket = io();
 socket.heartbeatTimeout = 20000;
-var userList = [];
+
 class ChatLayout extends Component {
   constructor() {
     super();
     this.state = {
       message: "",
       user: [],
-      users: []
+      users: [],
+      userList: []
     };
     this.onSubmit = this.onSubmit.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -25,10 +26,8 @@ class ChatLayout extends Component {
       $("#messages").append($("<li>").text(msg));
       this.setState({ message: "" });
     });
-
-    socket.on("update user list", userList => {
-      this.setState({ users: userList });
-      this.forceUpdate();
+    socket.on("privatemessage", msg => {
+      console.log(msg);
     });
   }
 
@@ -60,17 +59,40 @@ class ChatLayout extends Component {
       this.onSubmit(e);
     }
   };
+  initPrivateChat(user) {
+    socket.emit(
+      "privatemessage",
+      user.socket,
+      this.state.message,
+      this.sendPrivateMessage
+    );
+  }
+
+  createChatWindow(user) {
+    let userList = [];
+    userList.push(user);
+    this.setState({ userList: userList });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return true;
+  }
   UserDisplay(users) {
     let Users;
     if (users.length !== 0) {
       Users = users.map((user, i) => {
         return (
-          <a className="dropdown-item" key={i} href="">
+          <a
+            className="dropdown-item"
+            key={i}
+            onClick={() => this.createChatWindow(user)}
+          >
             {user.user}
           </a>
         );
       });
     }
+
     return (
       <div className="dropdown-menu" id="users">
         <a className="dropdown-item" href="">
@@ -81,7 +103,13 @@ class ChatLayout extends Component {
       </div>
     );
   }
+
   render() {
+    socket.on("update user list", userList => {
+      this.setState({ users: userList });
+      this.forceUpdate();
+    });
+
     return (
       <div className="chat navbar fixed-bottom">
         <div className="btn-group dropup">
@@ -96,10 +124,19 @@ class ChatLayout extends Component {
           </button>
           {this.UserDisplay(this.state.users)}
         </div>
+        <div className="row">
+          <UserChat list={this.state.userList} />
+        </div>
+
+        {/*<div className="row">
+          <div className="btn-group dropup">
+            <UserChat userchatlist={this.state.userList} />
+          </div>
+        </div>/*}
         <ul id="messages">
           <div />
         </ul>
-        <form onSubmit={this.onSubmit}>
+        {/*<form onSubmit={this.onSubmit}>
           <textarea
             name="message"
             placeholder="Enter your message here"
@@ -110,7 +147,7 @@ class ChatLayout extends Component {
             onChange={this.onChange}
           />
           <input type="submit" className="btn btn-info btn-block mt-4" />
-        </form>
+    </form>*/}
       </div>
     );
   }

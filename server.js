@@ -13,7 +13,7 @@ const app = express();
 
 //Chat client part
 let userList = [];
-let socketList = [];
+
 const port = process.env.PORT || 5000;
 var server = app.listen(port, () =>
   console.log(`Server running on port ${port}`)
@@ -80,9 +80,12 @@ io.on("connection", function(socket) {
   });
   socket.on("disconnect", () => {
     const newUsers = userList.filter(users => users.socket != socket.id);
-    console.log(newUsers);
+    userList = newUsers;
+    socket.emit("update user list", userList);
+    socket.broadcast.emit("update user list", userList);
+  });
 
-    socket.emit("update user list", newUsers);
-    socket.broadcast.emit("update user list", newUsers);
+  socket.on("privatemessage", (userSocket, msg, callback) => {
+    io.to(userSocket).emit("privatemessage", msg);
   });
 });
