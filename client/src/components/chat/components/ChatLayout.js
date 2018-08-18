@@ -25,7 +25,6 @@ class ChatLayout extends Component {
     };
     socket.on("privatemessage", msg => {
       $("#messages").append($("<li>").text(msg));
-      this.setState({ message: "" });
     });
     this.handleClick = this.handleClick.bind(this);
   }

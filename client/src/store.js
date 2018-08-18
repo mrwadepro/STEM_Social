@@ -5,8 +5,8 @@ import rootReducer from "./reducers";
 const initialState = {};
 var isChrome = !!window.chrome && !!window.chrome.webstore;
 const middleware = [thunk];
-let store;
-/*if (isChrome) {
+/*let store;
+if (isChrome) {
   store = createStore(
     rootReducer,
     initialState,
