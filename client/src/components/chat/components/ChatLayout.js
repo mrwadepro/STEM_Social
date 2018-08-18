@@ -7,13 +7,14 @@ import { refreshUser } from "../../../actions/authActions";
 import "../../../Chat.css";
 import $ from "jquery";
 import UserChat from "./UserChat";
-
+import UserList from "./UserList";
 var socket = io();
 socket.heartbeatTimeout = 20000;
 let userList = [];
 class ChatLayout extends Component {
   constructor() {
     super();
+    this.createChatWindow = this.createChatWindow.bind(this);
     this.state = {
       message: "",
       user: [],
@@ -110,43 +111,23 @@ class ChatLayout extends Component {
     });
 
     return (
-      <div className="chat navbar fixed-bottom">
-        <div className="btn-group dropup">
-          <button
-            type="button"
-            className="btn btn-secondary dropdown-toggle"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            Chat
-          </button>
-          {this.UserDisplay(this.state.users)}
-        </div>
-        <div className="row">
-          <UserChat list={this.state.userList} />
-        </div>
-
-        {/*<div className="row">
-          <div className="btn-group dropup">
-            <UserChat userchatlist={this.state.userList} />
+      <div className="chat">
+        <div className="fixed-bottom">
+          <div className="row justify-content-start">
+            <div className="col-3">
+              <UserList
+                list={this.state.users}
+                callback={this.createChatWindow}
+              />
+            </div>
+            <div className="col-9">
+              <div className="btn-group dropup">
+                {this.UserDisplay(this.state.users)}
+              </div>
+              <UserChat list={this.state.userList} />
+            </div>
           </div>
-        </div>/*}
-        <ul id="messages">
-          <div />
-        </ul>
-        {/*<form onSubmit={this.onSubmit}>
-          <textarea
-            name="message"
-            placeholder="Enter your message here"
-            autoComplete="off"
-            type="submit"
-            onKeyDown={this.onEnterPress}
-            value={this.state.message}
-            onChange={this.onChange}
-          />
-          <input type="submit" className="btn btn-info btn-block mt-4" />
-    </form>*/}
+        </div>
       </div>
     );
   }
@@ -167,3 +148,25 @@ export default connect(
   mapStateToProps,
   { getCurrentProfile, refreshUser }
 )(ChatLayout);
+{
+  /*<div className="row">
+          <div className="btn-group dropup">
+            <UserChat userchatlist={this.state.userList} />
+          </div>
+        </div>/*}
+        <ul id="messages">
+          <div />
+        </ul>
+        {/*<form onSubmit={this.onSubmit}>
+          <textarea
+            name="message"
+            placeholder="Enter your message here"
+            autoComplete="off"
+            type="submit"
+            onKeyDown={this.onEnterPress}
+            value={this.state.message}
+            onChange={this.onChange}
+          />
+          <input type="submit" className="btn btn-info btn-block mt-4" />
+    </form>*/
+}

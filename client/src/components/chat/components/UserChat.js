@@ -10,7 +10,6 @@ class UserChat extends React.Component {
   render() {
     return (
       <ul>
-        {console.log(this.props.list)}
         {this.props.list[0] !== undefined &&
           this.props.list.map((user, i) => {
             return (

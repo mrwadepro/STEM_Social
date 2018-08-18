@@ -8,4 +8,20 @@
 
 li {
   display: inline;
+  padding: 5px;
+  margin: 0px;
+  color: black;
+}
+.userbutton {
+  size: 2px;
+}
+.card {
+  color: black;
+  width: 18rem;
+}
+.onlinebar {
+  position: "absolute";
+  color: red;
+  bottom: 0;
+  left: 0;
 }
