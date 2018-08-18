@@ -6,7 +6,7 @@ const initialState = {};
 var isChrome = !!window.chrome && !!window.chrome.webstore;
 const middleware = [thunk];
 let store;
-if (isChrome) {
+/*if (isChrome) {
   store = createStore(
     rootReducer,
     initialState,
@@ -23,5 +23,13 @@ if (isChrome) {
     compose(applyMiddleware(...middleware))
   );
 }
-
+*/
+const store = createStore(
+  rootReducer,
+  initialState,
+  compose(
+    applyMiddleware(...middleware),
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  )
+);
 export default store;
