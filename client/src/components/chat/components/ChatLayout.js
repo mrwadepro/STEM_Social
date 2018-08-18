@@ -5,11 +5,13 @@ import PropTypes from "prop-types";
 import { getCurrentProfile } from "../../../actions/profileActions";
 import { refreshUser } from "../../../actions/authActions";
 import "../../../Chat.css";
-import $ from "jquery";
 import UserChat from "./UserChat";
 import UserList from "./UserList";
+import $ from "jquery";
 var socket = io();
+
 socket.heartbeatTimeout = 20000;
+let chatButton = true;
 let userList = [];
 class ChatLayout extends Component {
   constructor() {
@@ -21,15 +23,11 @@ class ChatLayout extends Component {
       users: [],
       userList: []
     };
-    this.onSubmit = this.onSubmit.bind(this);
-    this.onChange = this.onChange.bind(this);
-    socket.on("chat message", msg => {
+    socket.on("privatemessage", msg => {
       $("#messages").append($("<li>").text(msg));
       this.setState({ message: "" });
     });
-    socket.on("privatemessage", msg => {
-      console.log(msg);
-    });
+    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
@@ -40,33 +38,16 @@ class ChatLayout extends Component {
     this.createUser(user.name, user.id);
   }
 
-  onSubmit(e) {
-    e.preventDefault();
-    socket.emit("chat message", this.state.message);
-  }
-
   createUser(name, id) {
     const userObj = {};
     userObj["user"] = name;
     userObj["userid"] = id;
     socket.emit("ADDUSER", userObj);
   }
-  onChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
-  }
-  onEnterPress = e => {
-    if (e.keyCode === 13 && e.shiftKey === false) {
-      e.preventDefault();
-      this.onSubmit(e);
-    }
-  };
-  initPrivateChat(user) {
-    socket.emit(
-      "privatemessage",
-      user.socket,
-      this.state.message,
-      this.sendPrivateMessage
-    );
+
+  handleClick(e) {
+    chatButton = !chatButton;
+    this.forceUpdate();
   }
 
   createChatWindow(user) {
@@ -76,32 +57,6 @@ class ChatLayout extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     return true;
-  }
-  UserDisplay(users) {
-    let Users;
-    if (users.length !== 0) {
-      Users = users.map((user, i) => {
-        return (
-          <a
-            className="dropdown-item"
-            key={i}
-            onClick={() => this.createChatWindow(user)}
-          >
-            {user.user}
-          </a>
-        );
-      });
-    }
-
-    return (
-      <div className="dropdown-menu" id="users">
-        <a className="dropdown-item" href="">
-          Online Users
-        </a>
-        <div className="dropdown-divider" />
-        {Users}
-      </div>
-    );
   }
 
   render() {
@@ -113,17 +68,35 @@ class ChatLayout extends Component {
     return (
       <div className="chat">
         <div className="fixed-bottom">
-          <div className="row justify-content-start">
+          <div className="row justify-content-start align-items-end">
             <div className="col-3">
-              <UserList
-                list={this.state.users}
-                callback={this.createChatWindow}
-              />
+              {chatButton && (
+                <button
+                  type="button"
+                  id="chatbtn"
+                  className="btn btn-light "
+                  onClick={this.handleClick}
+                >
+                  chat
+                </button>
+              )}
+              {chatButton === false && (
+                <div className="card">
+                  <button className="chatcollapse" onClick={this.handleClick}>
+                    <div className="card-header" id="chatHeader">
+                      Chat
+                    </div>
+                  </button>
+                  <div className="card-body">
+                    <UserList
+                      list={this.state.users}
+                      callback={this.createChatWindow}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
             <div className="col-9">
-              <div className="btn-group dropup">
-                {this.UserDisplay(this.state.users)}
-              </div>
               <UserChat list={this.state.userList} />
             </div>
           </div>

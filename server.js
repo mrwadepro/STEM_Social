@@ -85,7 +85,7 @@ io.on("connection", function(socket) {
     socket.broadcast.emit("update user list", userList);
   });
 
-  socket.on("privatemessage", (userSocket, msg, callback) => {
+  socket.on("privatemessage", (userSocket, msg) => {
     io.to(userSocket).emit("privatemessage", msg);
   });
 });

@@ -1,35 +1,25 @@
 import React from "react";
 import PropTypes from "prop-types";
 import "../../../Chat.css";
+import UserCard from "./UserCard";
 
 class UserChat extends React.Component {
+  constructor() {
+    super();
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     return true;
   }
 
   render() {
     return (
-      <ul>
+      <div className="card-deck">
         {this.props.list[0] !== undefined &&
           this.props.list.map((user, i) => {
-            return (
-              <li key={i}>
-                <div className="btn-group dropup">
-                  <button
-                    type="button"
-                    className="btn btn-secondary dropdown-toggle"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                    {this.props.list[i].user}
-                  </button>
-                  <div className="dropdown-menu" />
-                </div>
-              </li>
-            );
+            return <UserCard key={i} user={user} />;
           })}
-      </ul>
+      </div>
     );
   }
 }

@@ -12,16 +12,41 @@ li {
   margin: 0px;
   color: black;
 }
+ul {
+  list-style-type: none;
+}
 .userbutton {
   size: 2px;
 }
 .card {
   color: black;
-  width: 18rem;
 }
 .onlinebar {
   position: "absolute";
   color: red;
   bottom: 0;
   left: 0;
+}
+#chatbtn {
+  color: black;
+  width: 200px;
+
+  margin-left: 5px;
+  margin-top: 0px;
+}
+.chatcollapse {
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+#chatHeader {
+  margin: 0px;
+  padding: 0px;
+}
+#chatcard {
+  width: 18rem;
+}
+.card-deck .card {
+  max-width: calc(25% - 30px);
 }
