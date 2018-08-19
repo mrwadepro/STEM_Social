@@ -6,15 +6,6 @@
   content: none;
 }
 
-li {
-  display: inline;
-  padding: 5px;
-  margin: 0px;
-  color: black;
-}
-ul {
-  list-style-type: none;
-}
 .userbutton {
   size: 2px;
 }

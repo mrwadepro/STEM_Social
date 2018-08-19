@@ -5,7 +5,7 @@ import rootReducer from "./reducers";
 const initialState = {};
 var isChrome = !!window.chrome && !!window.chrome.webstore;
 const middleware = [thunk];
-/*let store;
+let store;
 if (isChrome) {
   store = createStore(
     rootReducer,
@@ -23,10 +23,5 @@ if (isChrome) {
     compose(applyMiddleware(...middleware))
   );
 }
-*/
-const store = createStore(
-  rootReducer,
-  initialState,
-  compose(applyMiddleware(...middleware))
-);
+
 export default store;

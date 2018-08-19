@@ -18,7 +18,6 @@ class ChatLayout extends Component {
     super();
     this.createChatWindow = this.createChatWindow.bind(this);
     this.state = {
-      message: "",
       user: [],
       users: [],
       userList: []
@@ -96,7 +95,10 @@ class ChatLayout extends Component {
               )}
             </div>
             <div className="col-9">
-              <UserChat list={this.state.userList} />
+              <UserChat
+                list={this.state.userList}
+                currentUser={this.state.user}
+              />
             </div>
           </div>
         </div>
@@ -120,25 +122,3 @@ export default connect(
   mapStateToProps,
   { getCurrentProfile, refreshUser }
 )(ChatLayout);
-{
-  /*<div className="row">
-          <div className="btn-group dropup">
-            <UserChat userchatlist={this.state.userList} />
-          </div>
-        </div>/*}
-        <ul id="messages">
-          <div />
-        </ul>
-        {/*<form onSubmit={this.onSubmit}>
-          <textarea
-            name="message"
-            placeholder="Enter your message here"
-            autoComplete="off"
-            type="submit"
-            onKeyDown={this.onEnterPress}
-            value={this.state.message}
-            onChange={this.onChange}
-          />
-          <input type="submit" className="btn btn-info btn-block mt-4" />
-    </form>*/
-}

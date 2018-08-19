@@ -4,10 +4,6 @@ import "../../../Chat.css";
 import UserCard from "./UserCard";
 
 class UserChat extends React.Component {
-  constructor() {
-    super();
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
     return true;
   }
