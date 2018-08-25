@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const passport = require("passport");
 const path = require("path");
-
+var moment = require("moment");
 const users = require("./routes/api/users");
 const profile = require("./routes/api/profile");
 const posts = require("./routes/api/posts");
@@ -13,7 +13,7 @@ const app = express();
 
 //Chat client part
 let userList = [];
-
+let activeChats = [];
 const port = process.env.PORT || 5000;
 var server = app.listen(port, () =>
   console.log(`Server running on port ${port}`)
@@ -59,6 +59,11 @@ if (process.env.NODE_ENV === "production") {
 
 //Chat socket actions
 io.on("connection", function(socket) {
+  socket.on("room", function(room) {
+    socket.join(room);
+    io.in(room).emit("message", "what is going on, party people?");
+    socket.emit("message", "FUCCCK"); // sends to the sender
+  });
   socket.on("ADDUSER", function(user) {
     let duplicate = false;
     if (userList != 0) {
@@ -85,7 +90,34 @@ io.on("connection", function(socket) {
     socket.broadcast.emit("update user list", userList);
   });
 
-  socket.on("privatemessage", (userSocket, msg) => {
-    io.to(userSocket).emit("privatemessage", msg);
+  socket.on(
+    "privatemessage",
+    (userSocket, msg, index, sender, senderSocket) => {
+      let timestamp = moment().format();
+      let msgObj = {};
+      msgObj["message"] = msg;
+      msgObj["timestamp"] = timestamp;
+      msgObj["sender"] = sender;
+      console.log(msgObj);
+      if (activeChats[index] !== undefined) {
+        activeChats[index].messages.push(msgObj);
+      }
+
+      io.to(userSocket).emit("privatemessage", msg, activeChats[index]);
+      io.to(senderSocket).emit("privatemessage", msg, activeChats[index]);
+    }
+  );
+  socket.on("handshake", (initHandshake, receiverHandshake, recieverSocket) => {
+    let chatObj = {};
+    chatObj["initiator"] = initHandshake;
+    chatObj["reciever"] = receiverHandshake;
+    chatObj["messages"] = [];
+    var chatIndex = activeChats.push(chatObj) - 1;
+    console.log("In hand");
+    io.to(recieverSocket).emit(
+      "acceptshake",
+      activeChats[chatIndex],
+      chatIndex
+    );
   });
 });

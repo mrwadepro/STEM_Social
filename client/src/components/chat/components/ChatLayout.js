@@ -7,7 +7,7 @@ import { refreshUser } from "../../../actions/authActions";
 import "../../../Chat.css";
 import UserChat from "./UserChat";
 import UserList from "./UserList";
-import $ from "jquery";
+
 var socket = io();
 
 socket.heartbeatTimeout = 20000;
@@ -22,9 +22,7 @@ class ChatLayout extends Component {
       users: [],
       userList: []
     };
-    socket.on("privatemessage", msg => {
-      $("#messages").append($("<li>").text(msg));
-    });
+
     this.handleClick = this.handleClick.bind(this);
   }
 
@@ -58,8 +56,12 @@ class ChatLayout extends Component {
   }
 
   render() {
+    const { user } = this.props.auth;
+
     socket.on("update user list", userList => {
-      this.setState({ users: userList });
+      let filteredUser = userList.filter(users => users.userid !== user.id);
+
+      this.setState({ users: filteredUser });
       this.forceUpdate();
     });
 
@@ -97,7 +99,8 @@ class ChatLayout extends Component {
             <div className="col-9">
               <UserChat
                 list={this.state.userList}
-                currentUser={this.state.user}
+                currentUser={user}
+                socket={socket}
               />
             </div>
           </div>

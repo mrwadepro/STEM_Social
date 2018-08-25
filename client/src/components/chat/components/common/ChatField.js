@@ -1,19 +1,18 @@
 import React, { Component } from "react";
-import io from "socket.io-client";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { getCurrentProfile } from "../../../../actions/profileActions";
 import classnames from "classnames";
-import $ from "jquery";
-var socket = io();
+var socket;
 class ChatField extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       message: ""
     };
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-  }
-  shouldComponentUpdate(nextProps, nextState) {
-    return true;
+    socket = this.props.socket;
   }
 
   onEnterPress = e => {
@@ -28,7 +27,15 @@ class ChatField extends Component {
   }
   onSubmit(e) {
     e.preventDefault();
-    socket.emit("privatemessage", this.props.user.socket, this.state.message);
+    socket.emit(
+      "privatemessage",
+      this.props.user.socket,
+      this.state.message,
+      this.props.chatusers,
+      this.props.auth.user,
+      this.props.socket.id
+    );
+
     this.setState({ message: "" });
   }
   render() {
@@ -48,5 +55,15 @@ class ChatField extends Component {
     );
   }
 }
+ChatField.propTypes = {
+  getCurrentProfile: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired
+};
 
-export default ChatField;
+const mapStateToProps = state => ({
+  auth: state.auth
+});
+export default connect(
+  mapStateToProps,
+  { getCurrentProfile }
+)(ChatField);

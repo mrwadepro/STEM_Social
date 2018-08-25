@@ -1,19 +1,28 @@
 import React, { Component } from "react";
-import io from "socket.io-client";
+
 import $ from "jquery";
-var socket = io();
+var socket;
 class ChatList extends Component {
-  constructor() {
-    super();
-    this.state = {
-      sent: [],
-      received: []
-    };
-    socket.on("privatemessage", msg => {
-      $("#messages").append($("<li>").text(msg));
-      socket.emit("privateresponse", this.props.user.socket, msg);
+  constructor(props) {
+    super(props);
+
+    socket = this.props.socket;
+    socket.on("privatemessage", (msg, activeChat) => {
+      if (
+        this.props.currentUser.id ===
+        activeChat.messages[activeChat.messages.length - 1].sender.id
+      ) {
+        $("#messages").append(
+          $("<div class=bubble-r><li></div><br />").text(msg)
+        );
+      } else {
+        $("#messages").append(
+          $("<div class=bubble><li></div> <br />").text(msg)
+        );
+      }
     });
   }
+
   render() {
     return (
       <ul id="messages">
@@ -22,4 +31,5 @@ class ChatList extends Component {
     );
   }
 }
+
 export default ChatList;
