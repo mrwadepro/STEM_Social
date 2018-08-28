@@ -1,25 +1,28 @@
 import React, { Component } from "react";
-import io from "socket.io-client";
+
 import $ from "jquery";
-var socket = io();
+var socket;
 class ChatList extends Component {
-  constructor() {
-    super();
-    this.state = {
-      sent: [],
-      received: []
-    };
-    socket.on("privatemessage", msg => {
-      $("#messages").append($("<li>").text(msg));
-      socket.emit("privateresponse", this.props.user.socket, msg);
+  constructor(props) {
+    super(props);
+
+    socket = this.props.socket;
+    socket.on(this.props.user.chatid, msg => {
+      $("#" + this.props.user.chatid).append(
+        $("<div class= bubble-r><li></div><br />").text(msg)
+      );
     });
+  }
+  componentWillMount() {
+    console.log(this.props.user);
   }
   render() {
     return (
-      <ul id="messages">
+      <ul id={this.props.user.chatid} className="float-right">
         <div />
       </ul>
     );
   }
 }
+
 export default ChatList;

@@ -7,8 +7,8 @@ import { refreshUser } from "../../../actions/authActions";
 import "../../../Chat.css";
 import UserChat from "./UserChat";
 import UserList from "./UserList";
-import $ from "jquery";
-var socket = io();
+
+let socket = io.connect();
 
 socket.heartbeatTimeout = 20000;
 let chatButton = true;
@@ -22,9 +22,7 @@ class ChatLayout extends Component {
       users: [],
       userList: []
     };
-    socket.on("privatemessage", msg => {
-      $("#messages").append($("<li>").text(msg));
-    });
+
     this.handleClick = this.handleClick.bind(this);
   }
 
@@ -33,13 +31,15 @@ class ChatLayout extends Component {
     this.props.refreshUser();
     const { user } = this.props.auth;
     // socket.emit("ADDUSER", user.name);
-    this.createUser(user.name, user.id);
+    this.createUser(user.name, user.id, user.avatar);
   }
 
-  createUser(name, id) {
+  createUser(name, id, avatar) {
     const userObj = {};
-    userObj["user"] = name;
-    userObj["userid"] = id;
+    userObj["name"] = name;
+    userObj["id"] = id;
+    userObj["avatar"] = avatar;
+
     socket.emit("ADDUSER", userObj);
   }
 
@@ -48,9 +48,18 @@ class ChatLayout extends Component {
     this.forceUpdate();
   }
 
-  createChatWindow(user) {
-    userList.push(user);
-    this.setState({ userList: userList });
+  createChatWindow(user, chatid) {
+    let duplicate = false;
+    for (let i = 0; i < userList.length; i++)
+      if (user.id === userList[i].id) {
+        duplicate = true;
+      }
+    if (!duplicate) {
+      user["chatid"] = chatid;
+      userList.push(user);
+
+      this.setState({ userList: userList });
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -58,8 +67,12 @@ class ChatLayout extends Component {
   }
 
   render() {
+    const { user } = this.props.auth;
+
     socket.on("update user list", userList => {
-      this.setState({ users: userList });
+      let filteredUser = userList.filter(users => users.id !== user.id);
+
+      this.setState({ users: filteredUser });
       this.forceUpdate();
     });
 
@@ -88,6 +101,7 @@ class ChatLayout extends Component {
                   <div className="card-body">
                     <UserList
                       list={this.state.users}
+                      currentUser={user}
                       callback={this.createChatWindow}
                     />
                   </div>
@@ -97,7 +111,9 @@ class ChatLayout extends Component {
             <div className="col-9">
               <UserChat
                 list={this.state.userList}
-                currentUser={this.state.user}
+                currentUser={user}
+                socket={socket}
+                callback={this.createChatWindow}
               />
             </div>
           </div>
