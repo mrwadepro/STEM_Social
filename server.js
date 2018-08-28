@@ -59,29 +59,32 @@ if (process.env.NODE_ENV === "production") {
 
 //Chat socket actions
 io.on("connection", function(socket) {
-  socket.on("room", function(room) {
-    socket.join(room);
-    io.in(room).emit("message", "what is going on, party people?");
-    socket.emit("message", "FUCCCK"); // sends to the sender
-  });
   socket.on("ADDUSER", function(user) {
     let duplicate = false;
     if (userList != 0) {
       for (var i = 0; i < userList.length; i++) {
-        if (userList[i].userid == user.userid) {
+        if (userList[i].id == user.id) {
           duplicate = true;
         }
       }
     }
     if (duplicate == false) {
       user["socket"] = socket.id;
+
       userList.push(user);
     }
     socket.emit("update user list", userList);
     socket.broadcast.emit("update user list", userList);
   });
-  socket.on("chat message", function(msg) {
-    io.emit("chat message", msg);
+  socket.on("createchat", (chatid, addedUser, initUser) => {
+    socket.join(chatid);
+
+    io.to(addedUser.socket).emit("joinroom", chatid, initUser);
+  });
+
+  socket.on("addtoroom", chatid => {
+    socket.join(chatid);
+    io.sockets.in(chatid).emit("createwindow");
   });
   socket.on("disconnect", () => {
     const newUsers = userList.filter(users => users.socket != socket.id);
@@ -90,34 +93,8 @@ io.on("connection", function(socket) {
     socket.broadcast.emit("update user list", userList);
   });
 
-  socket.on(
-    "privatemessage",
-    (userSocket, msg, index, sender, senderSocket) => {
-      let timestamp = moment().format();
-      let msgObj = {};
-      msgObj["message"] = msg;
-      msgObj["timestamp"] = timestamp;
-      msgObj["sender"] = sender;
-      console.log(msgObj);
-      if (activeChats[index] !== undefined) {
-        activeChats[index].messages.push(msgObj);
-      }
-
-      io.to(userSocket).emit("privatemessage", msg, activeChats[index]);
-      io.to(senderSocket).emit("privatemessage", msg, activeChats[index]);
-    }
-  );
-  socket.on("handshake", (initHandshake, receiverHandshake, recieverSocket) => {
-    let chatObj = {};
-    chatObj["initiator"] = initHandshake;
-    chatObj["reciever"] = receiverHandshake;
-    chatObj["messages"] = [];
-    var chatIndex = activeChats.push(chatObj) - 1;
-    console.log("In hand");
-    io.to(recieverSocket).emit(
-      "acceptshake",
-      activeChats[chatIndex],
-      chatIndex
-    );
+  socket.on("message", (chatid, msg) => {
+    console.log(chatid);
+    io.sockets.in(chatid).emit(chatid, msg);
   });
 });

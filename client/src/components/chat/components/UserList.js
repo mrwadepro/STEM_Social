@@ -8,10 +8,11 @@ class UserList extends Component {
         {this.props.list.length !== 0 && (
           <ul className="list-group">
             {this.props.list.map((user, i) => {
+              user["chatid"] = this.props.currentUser.id + user.id;
               return (
                 <li key={i} className="list-group-item">
                   <a onClick={() => this.props.callback(this.props.list[i])}>
-                    {this.props.list[i].user}
+                    {this.props.list[i].name}
                   </a>
                 </li>
               );

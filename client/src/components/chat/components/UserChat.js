@@ -3,25 +3,12 @@ import PropTypes from "prop-types";
 import "../../../Chat.css";
 import UserCard from "./UserCard";
 
-let activeChat = [];
-
+let chatID = "";
 class UserChat extends React.Component {
-  constructor(props) {
-    super(props);
-    this.addChat = this.addChat.bind(this);
-    this.state = {
-      chats: []
-    };
-  }
-  shouldComponentUpdate(nextProps, nextState) {
-    return true;
-  }
-  addChat(chat, index) {
-    chat["serverindex"] = index;
-
-    activeChat.push(chat);
-    this.setState({
-      chats: activeChat
+  componentDidMount() {
+    this.props.socket.on("joinroom", (chatid, initUser) => {
+      this.props.socket.emit("addtoroom", chatid);
+      this.props.callback(initUser, chatid);
     });
   }
   render() {
@@ -33,10 +20,12 @@ class UserChat extends React.Component {
               <UserCard
                 key={i}
                 user={user}
+                chatid={chatID}
                 currentUser={this.props.currentUser}
-                socket={this.props.socket}
-                callback={this.addChat}
-                index={i}
+                callback={this.props.callback}
+                //This calls createWindow in ChatLayout
+
+                socket={this.props.socket} //This is the logged in users socket
               />
             );
           })}

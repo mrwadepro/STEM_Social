@@ -12,6 +12,9 @@
 .card {
   color: black;
 }
+#chatcard {
+  width: 40rem;
+}
 .card-text {
   overflow: auto;
   height: 10rem;
@@ -40,9 +43,7 @@
   margin: 0px;
   padding: 0px;
 }
-#chatcard {
-  width: 2rem;
-}
+
 .card-deck .card {
   max-width: calc(25% + 80px);
 }

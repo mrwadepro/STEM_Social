@@ -6,28 +6,20 @@ import ChatField from "./common/ChatField";
 import ChatList from "./common/ChatList";
 
 class UserCard extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     this.props.socket.emit(
-      "handshake",
-      this.props.currentUser,
+      "createchat",
+      this.props.user.chatid,
       this.props.user,
-      this.props.user.socket
+      this.props.currentUser
     );
-    this.props.socket.on("acceptshake", (chat, i) => {
-      console.log("HAHAHA");
-      this.props.callback(chat, i);
-    });
   }
 
   render() {
     return (
       <div className="card" id="chatcard">
         <div className="card-body">
-          <h5 className="card-title">{this.props.user.user}</h5>
+          <h5 className="card-title">{this.props.user.name}</h5>
           <div className="card-text">
             <ChatList
               user={this.props.user}
@@ -39,11 +31,7 @@ class UserCard extends React.Component {
         <div className="card-footer">
           <small className="text-muted">
             <form>
-              <ChatField
-                user={this.props.user}
-                socket={this.props.socket}
-                chatusers={this.props.index}
-              />
+              <ChatField user={this.props.user} socket={this.props.socket} />
             </form>
           </small>
         </div>

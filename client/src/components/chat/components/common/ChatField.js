@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getCurrentProfile } from "../../../../actions/profileActions";
 import classnames from "classnames";
-var socket;
+let socket;
 class ChatField extends Component {
   constructor(props) {
     super(props);
@@ -27,14 +27,8 @@ class ChatField extends Component {
   }
   onSubmit(e) {
     e.preventDefault();
-    socket.emit(
-      "privatemessage",
-      this.props.user.socket,
-      this.state.message,
-      this.props.chatusers,
-      this.props.auth.user,
-      this.props.socket.id
-    );
+
+    socket.emit("message", this.props.user.chatid, this.state.message);
 
     this.setState({ message: "" });
   }

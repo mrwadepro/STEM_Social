@@ -7,25 +7,18 @@ class ChatList extends Component {
     super(props);
 
     socket = this.props.socket;
-    socket.on("privatemessage", (msg, activeChat) => {
-      if (
-        this.props.currentUser.id ===
-        activeChat.messages[activeChat.messages.length - 1].sender.id
-      ) {
-        $("#messages").append(
-          $("<div class=bubble-r><li></div><br />").text(msg)
-        );
-      } else {
-        $("#messages").append(
-          $("<div class=bubble><li></div> <br />").text(msg)
-        );
-      }
+    socket.on(this.props.user.chatid, msg => {
+      $("#" + this.props.user.chatid).append(
+        $("<div class= bubble-r><li></div><br />").text(msg)
+      );
     });
   }
-
+  componentWillMount() {
+    console.log(this.props.user);
+  }
   render() {
     return (
-      <ul id="messages">
+      <ul id={this.props.user.chatid} className="float-right">
         <div />
       </ul>
     );
